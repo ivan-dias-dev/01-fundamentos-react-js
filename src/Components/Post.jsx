@@ -10,7 +10,7 @@ import { useState } from "react"
 
 export function Post({ author, publishedAt, content }) {
 
-    const [comments, setComments] = useState([]) //lista de comentários
+    const [comments, setComments] = useState(["Massa!"]) //lista de comentários
 
     const [newCommentText, setNewSetCommentText] = useState("")//sempre iniciar um estado com uma informação vazia ou o mesmo tipo que vamos armazenar
 
@@ -25,13 +25,12 @@ export function Post({ author, publishedAt, content }) {
         setNewSetCommentText("")//Ele "reseta" o setNewSetCommentText para o valor inicial == const [newCommentText, setNewSetCommentText] = useState("")
     }
 
-    function handleNewCommentChange() {
+    function handleNewCommentChange(e) {
+        console.log(e)
         setNewSetCommentText(event.target.value)//seta o setNewSetCommentText para o valor da textArea
     }
 
 
-
-    //////////////////////////////////////////////////////////////////////////////////////////
     const publishedDateFormatted = format(publishedAt, "d 'de' LLLL 'às' HH:mm'h'", {
         locale: ptBr,
     })
@@ -66,9 +65,9 @@ export function Post({ author, publishedAt, content }) {
             <div className={styles.content}>
                 {content.map(line => {
                     if (line.type === 'paragraph') {
-                        return <p>{line.content}</p>
+                        return <p key={line.content}>{line.content}</p>
                     } else if (line.type === 'link') {
-                        return <p><a href="#" >{line.content}</a></p>
+                        return <p key={line.content}><a href="#" >{line.content}</a></p>
                     }
                 })}
             </div>
@@ -87,7 +86,7 @@ export function Post({ author, publishedAt, content }) {
             </form>
             <div className={styles.CommentList}>
                 {comments.map((comment) => {
-                    return < Comment content={comment} />
+                    return < Comment content={comment} key={comment} />
                 })}
 
             </div>
