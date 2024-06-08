@@ -10,10 +10,13 @@ import { useState } from "react"
 
 export function Post({ author, publishedAt, content }) {
 
-    const [comments, setComments] = useState(["Massa!"]) //lista de comentários
+    const [comments, setComments] = useState(
+        ["Massa!", "top"]
+    ) //lista de comentários
 
     const [newCommentText, setNewSetCommentText] = useState("")//sempre iniciar um estado com uma informação vazia ou o mesmo tipo que vamos armazenar
 
+    console.log(newCommentText)
     function handleCreateNewComment() {
 
         event.preventDefault() //Para n dar reload
@@ -25,9 +28,20 @@ export function Post({ author, publishedAt, content }) {
         setNewSetCommentText("")//Ele "reseta" o setNewSetCommentText para o valor inicial == const [newCommentText, setNewSetCommentText] = useState("")
     }
 
-    function handleNewCommentChange(e) {
-        console.log(e)
+    function handleNewCommentChange() {
+        event.target.setCustomValidity("")
         setNewSetCommentText(event.target.value)//seta o setNewSetCommentText para o valor da textArea
+    }
+
+    function deleteComment(commentToDelete) {
+        const commentsWithouteDeleteOne = comments.filter(comment => {
+            return comment !== commentToDelete
+        })
+        setComments(commentsWithouteDeleteOne)
+    }
+
+    function handleNewCommentinvalid() {
+        event.target.setCustomValidity("Este campo é obrigatório")
     }
 
 
@@ -47,6 +61,8 @@ export function Post({ author, publishedAt, content }) {
     //     minute: '2-digit',
 
     // }).format(publishedAt)
+
+    let isNewCommentEmpty = newCommentText.length === 0
     return (
         <article className={styles.post}>
             <header>
@@ -78,15 +94,21 @@ export function Post({ author, publishedAt, content }) {
                     placeholder="Escreva um comentário..."
                     name="comment"
                     value={newCommentText}//seta o valor 
-                    onChange={handleNewCommentChange}>
+                    onChange={handleNewCommentChange}
+                    onInvalid={handleNewCommentinvalid}
+                    required
+                >
+
                 </textarea>
                 <footer>
-                    <button type="submit">Publicar!</button>
+                    <button type="submit" disabled={isNewCommentEmpty}>
+                        Publicar!
+                    </button>
                 </footer>
             </form>
             <div className={styles.CommentList}>
                 {comments.map((comment) => {
-                    return < Comment content={comment} key={comment} />
+                    return < Comment content={comment} key={comment} onDeleteComment={deleteComment} />
                 })}
 
             </div>
